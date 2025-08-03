@@ -220,8 +220,6 @@ sudo vim /etc/dcker/daemon.json
 docker build -t gpt2-dev .
 
 docker run -it --gpus all gpt2-dev /bin/bash
-
-cd src
 ```
 
 ### 構築したモデルについて
