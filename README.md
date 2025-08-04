@@ -10,10 +10,10 @@ git clone https://github.com/ArekuNoimar/gpt-2.git
 
 ## 動作要件
 
-Python  : Python 3.10.12
-OS  : Ubuntu 22.04.5 Desktop LTS
-CUDA  : 12.4
-GPU : Nvidia Geforce RTX 4090 Laptop
+Python  : Python 3.10.12  
+OS  : Ubuntu 22.04.5 Desktop LTS  
+CUDA  : 12.4  
+GPU : Nvidia Geforce RTX 4090 Laptop  
 
 ## 構成について
 
@@ -66,7 +66,51 @@ python3 gpt2_demo.py
 <実行コマンド>
 
 ```bash
-python3 gpt2_from_scratch.py
+# HuggingFace 'openai-community/gpt2'のパラメーターに該当
+python3 gpt2_from_scratch.py \
+    --d_model 768 \
+    --n_heads 12 \
+    --n_layers 12 \
+    --d_ff 3072 \
+    --max_len 1024 \
+    --dropout 0.1 \
+    --batch_size 1 \
+    --learning_rate 0.0001 \
+    --num_epochs 10 \
+    --save_dir ./checkpoints \
+    --prompt "The quick brown"
+```
+
+```bash
+# HuggingFace 'openai-community/gpt2-medium'のパラメーターに該当
+python3 gpt2_from_scratch.py \
+    --d_model 1024 \
+    --n_heads 16 \
+    --n_layers 24 \
+    --d_ff 4096 \
+    --max_len 1024 \
+    --dropout 0.1 \
+    --batch_size 1 \
+    --learning_rate 0.0001 \
+    --num_epochs 10 \
+    --save_dir ./checkpoints \
+    --prompt "The quick brown"
+```
+
+```bash
+# HuggingFace 'openai-community/gpt2-large'のパラメーターに該当
+python3 gpt2_from_scratch.py \
+    --d_model 1280 \
+    --n_heads 20 \
+    --n_layers 36 \
+    --d_ff 5120 \
+    --max_len 1024 \
+    --dropout 0.1 \
+    --batch_size 1 \
+    --learning_rate 0.0001 \
+    --num_epochs 10 \
+    --save_dir ./checkpoints \
+    --prompt "The quick brown"
 ```
 
 <出力>
