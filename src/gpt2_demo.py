@@ -1,6 +1,6 @@
 """
-GPT-2 Model Demo Script
-Demonstrates various features of the GPT-2 implementation
+GPT-2モデルデモスクリプト
+GPT-2実装の様々な機能をデモンストレーションする
 """
 
 import torch
@@ -10,14 +10,18 @@ from torch.utils.data import DataLoader
 
 
 def demo_model_architecture():
-    """Demonstrate the model architecture and components"""
+    """モデルアーキテクチャとコンポーネントをデモンストレーションする。
+    
+    GPT-2モデルの構造、パラメータ数、および順伝播の動作を表示し、
+    モデルの基本情報と機能を確認する。
+    """
     print("=== GPT-2 Model Architecture Demo ===")
     
-    # Initialize tokenizer
+    # トークナイザーを初期化
     tokenizer = tiktoken.get_encoding("gpt2")
     vocab_size = tokenizer.n_vocab
     
-    # Model configuration
+    # モデル設定
     config = {
         'vocab_size': vocab_size,
         'd_model': 384,
@@ -28,7 +32,7 @@ def demo_model_architecture():
         'dropout': 0.1
     }
     
-    # Initialize model
+    # モデルを初期化
     model = GPT2Model(**config)
     
     print(f"Vocabulary size: {vocab_size:,}")
@@ -39,8 +43,8 @@ def demo_model_architecture():
     print(f"Maximum sequence length: {config['max_len']}")
     print(f"Total parameters: {sum(p.numel() for p in model.parameters()) / 1e6:.1f}M")
     
-    # Test forward pass
-    test_input = torch.randint(0, vocab_size, (2, 10))  # Batch size 2, sequence length 10
+    # 順伝播のテスト
+    test_input = torch.randint(0, vocab_size, (2, 10))  # バッチサイズ2、シーケンス長10
     with torch.no_grad():
         output = model(test_input)
     
@@ -51,13 +55,17 @@ def demo_model_architecture():
 
 
 def demo_text_generation():
-    """Demonstrate text generation with different parameters"""
+    """異なるパラメータでのテキスト生成をデモンストレーションする。
+    
+    複数のプロンプトと異なる生成設定（温度、top-kなど）を使用して、
+    モデルのテキスト生成能力を評価し、設定の影響を比較する。
+    """
     print("=== Text Generation Demo ===")
     
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     tokenizer = tiktoken.get_encoding("gpt2")
     
-    # Initialize a small model for quick demo
+    # 簡単なデモのための小さなモデルを初期化
     config = {
         'vocab_size': tokenizer.n_vocab,
         'd_model': 256,
@@ -70,14 +78,14 @@ def demo_text_generation():
     
     model = GPT2Model(**config).to(device)
     
-    # Test prompts
+    # テストプロンプト
     prompts = [
         "The future of artificial intelligence",
         "In a world where technology",
         "Machine learning has revolutionized"
     ]
     
-    # Generation parameters to test
+    # テストする生成パラメータ
     generation_configs = [
         {"temperature": 0.7, "top_k": 40, "max_new_tokens": 20},
         {"temperature": 1.0, "top_k": None, "max_new_tokens": 20},
@@ -98,13 +106,17 @@ def demo_text_generation():
 
 
 def demo_training_process():
-    """Demonstrate the training process with metrics"""
+    """メトリクス付きの訓練プロセスをデモンストレーションする。
+    
+    小さなモデルで簡単な訓練ループを実行し、訓練の進行状況、
+    損失値の変化、および訓練プロセスの概要を表示する。
+    """
     print("=== Training Process Demo ===")
     
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     tokenizer = tiktoken.get_encoding("gpt2")
     
-    # Small model for quick training demo
+    # 簡単な訓練デモのための小さなモデル
     config = {
         'vocab_size': tokenizer.n_vocab,
         'd_model': 128,
@@ -117,7 +129,7 @@ def demo_training_process():
     
     model = GPT2Model(**config).to(device)
     
-    # Sample training text
+    # サンプル訓練テキスト
     training_text = """
     Artificial intelligence is rapidly advancing. Machine learning algorithms can now perform tasks that were once thought impossible.
     Deep learning models have revolutionized computer vision, natural language processing, and many other fields.
@@ -125,11 +137,11 @@ def demo_training_process():
     GPT models are large language models that generate text by predicting the next token in a sequence.
     """ * 20
     
-    # Create dataset
+    # データセットを作成
     dataset = TextDataset(training_text, tokenizer, max_length=32)
     dataloader = DataLoader(dataset, batch_size=4, shuffle=True)
     
-    # Training setup
+    # 訓練設定
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
     
     print(f"Dataset size: {len(dataset)} sequences")
@@ -167,12 +179,16 @@ def demo_training_process():
 
 
 def demo_attention_visualization():
-    """Demonstrate how to extract attention weights for visualization"""
+    """アテンション重みを抽出して可視化する方法をデモンストレーションする。
+    
+    テスト文を使用してモデルのアテンションパターンを調査し、
+    アテンション重みの可視化に必要な情報を表示する。
+    """
     print("=== Attention Visualization Demo ===")
     
     tokenizer = tiktoken.get_encoding("gpt2")
     
-    # Small model for demonstration
+    # デモンストレーション用の小さなモデル
     config = {
         'vocab_size': tokenizer.n_vocab,
         'd_model': 128,
@@ -180,13 +196,13 @@ def demo_attention_visualization():
         'n_layers': 2,
         'd_ff': 512,
         'max_len': 64,
-        'dropout': 0.0  # No dropout for consistent results
+        'dropout': 0.0  # 一貫した結果のためドロップアウトなし
     }
     
     model = GPT2Model(**config)
     model.eval()
     
-    # Test sentence
+    # テスト文
     text = "The cat sat on the mat"
     tokens = tokenizer.encode(text)
     input_ids = torch.tensor([tokens])
@@ -195,10 +211,10 @@ def demo_attention_visualization():
     print(f"Tokens: {tokens}")
     print(f"Decoded tokens: {[tokenizer.decode([t]) for t in tokens]}")
     
-    # Forward pass to get attention patterns
+    # アテンションパターンを取得するための順伝播
     with torch.no_grad():
-        # We would need to modify the model to return attention weights
-        # For now, just show the concept
+        # アテンション重みを返すためにモデルを修正する必要がある
+        # 今のところはコンセプトを示すだけ
         logits = model(input_ids)
         
     print(f"Output logits shape: {logits.shape}")
@@ -207,7 +223,11 @@ def demo_attention_visualization():
 
 
 def main():
-    """Run all demos"""
+    """すべてのデモを実行する。
+    
+    GPT-2モデルの各機能を順次デモンストレーションし、
+    モデルの完全な機能一覧を表示する。
+    """
     print("GPT-2 Implementation Demo")
     print("=" * 50)
     

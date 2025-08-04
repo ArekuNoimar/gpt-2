@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-GPT-2 Inference Script
-Simple inference script for GPT-2 models trained from scratch.
-Loads model from checkpoints directory and provides interactive text generation.
+GPT-2推論スクリプト
+スクラッチから訓練されたGPT-2モデルのためのシンプルな推論スクリプト。
+チョックポイントディレクトリからモデルを読み込み、インタラクティブなテキスト生成を提供する。
 """
 
 import torch
@@ -11,21 +11,33 @@ import os
 import sys
 import argparse
 
-# Add the programs/src directory to the path to import our modules
+# モジュールをインポートするためにprograms/srcディレクトリをパスに追加
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
 from gpt2_from_scratch import GPT2Model
 
 
 def load_model_and_tokenizer(model_path, device='cpu'):
-    """Load the GPT-2 model and tokenizer"""
+    """GPT-2モデルとトークナイザーを読み込む。
+    
+    指定されたパスからモデルのチェックポイントを読み込み、
+    適切なデバイスに配置し、トークナイザーも初期化する。
+    
+    Args:
+        model_path (str): モデルチェックポイントファイルのパス。
+        device (str): モデルを読み込むデバイス。デフォルトは'cpu'。
+        
+    Returns:
+        tuple: (GPT2Model, tokenizer, checkpoint) のタプル。
+    """
     print(f"Loading model from: {model_path}")
     
-    # Load the model using the class method
+    # クラスメソッドを使用してモデルを読み込み
     model, checkpoint = GPT2Model.load_model(model_path, device)
     model.eval()
+    print(model)
     
-    # Initialize tiktoken tokenizer (same as used during training)
+    # tiktokenトークナイザーを初期化（訓練時と同じもの）
     tokenizer = tiktoken.get_encoding("gpt2")
     
     print(f"Model loaded successfully!")
@@ -39,14 +51,30 @@ def load_model_and_tokenizer(model_path, device='cpu'):
 
 
 def generate_text(model, tokenizer, prompt, max_new_tokens=50, temperature=0.8, top_k=40, device='cpu'):
-    """Generate text using the loaded model"""
-    # Encode the prompt
+    """読み込み済みモデルを使用してテキストを生成する。
+    
+    与えられたプロンプトから始めて、指定されたパラメータで
+    テキストを自己回帰的に生成する。
+    
+    Args:
+        model (GPT2Model): 訓練済みのGPT-2モデル。
+        tokenizer: テキストエンコーディング用トークナイザー。
+        prompt (str): 生成のための初期プロンプト。
+        max_new_tokens (int): 生成する最大新規トークン数。デフォルトは50。
+        temperature (float): サンプリング温度。デフォルトは0.8。
+        top_k (int): Top-kサンプリングパラメータ。デフォルトは40。
+        device (str): 推論を実行するデバイス。デフォルトは'cpu'。
+        
+    Returns:
+        str: 生成されたテキスト。
+    """
+    # プロンプトをエンコード
     input_ids = torch.tensor([tokenizer.encode(prompt)], device=device)
     
     print(f"\nPrompt: {prompt}")
     print("Generating...")
     
-    # Generate text
+    # テキストを生成
     with torch.no_grad():
         generated = model.generate(
             input_ids, 
@@ -55,28 +83,37 @@ def generate_text(model, tokenizer, prompt, max_new_tokens=50, temperature=0.8, 
             top_k=top_k
         )
     
-    # Decode the generated text
+    # 生成されたテキストをデコード
     generated_text = tokenizer.decode(generated[0].cpu().tolist())
     
     return generated_text
 
 
 def interactive_mode(model, tokenizer, device):
-    """Interactive text generation mode"""
+    """インタラクティブテキスト生成モード。
+    
+    ユーザーからの入力を受け取り、リアルタイムでテキスト生成を行う。
+    生成パラメータの変更、ヘルプ表示などの機能を提供する。
+    
+    Args:
+        model (GPT2Model): 訓練済みのGPT-2モデル。
+        tokenizer: テキストエンコーディング用トークナイザー。
+        device (torch.device): 推論を実行するデバイス。
+    """
     print("\n" + "="*60)
     print("GPT-2 Interactive Text Generation")
     print("Type 'quit' or 'exit' to stop")
     print("Type 'help' for generation parameters")
     print("="*60)
     
-    # Default generation parameters
+    # デフォルト生成パラメータ
     max_tokens = 50
     temperature = 0.8
     top_k = 40
     
     while True:
         try:
-            # Get user input
+            # ユーザー入力を取得
             prompt = input("\nEnter your prompt: ").strip()
             
             if prompt.lower() in ['quit', 'exit', 'q']:
@@ -97,7 +134,7 @@ To change parameters, use:
                 """)
                 continue
             
-            # Handle parameter changes
+            # パラメータ変更を処理
             if prompt.lower().startswith('set '):
                 parts = prompt.split()
                 if len(parts) == 3:
@@ -126,7 +163,7 @@ To change parameters, use:
                 print("Please enter a prompt.")
                 continue
             
-            # Generate text
+            # テキストを生成
             generated_text = generate_text(
                 model, tokenizer, prompt, max_tokens, temperature, top_k, device
             )
@@ -142,7 +179,15 @@ To change parameters, use:
 
 
 def main():
-    """Main function"""
+    """メイン関数。
+    
+    コマンドライン引数を解析し、モデルを読み込み、
+    プロンプトが指定されている場合は単一生成、
+    そうでなければインタラクティブモードを開始する。
+    
+    Returns:
+        int: 終了ステータスコード。
+    """
     parser = argparse.ArgumentParser(description='GPT-2 Inference Script')
     parser.add_argument(
         '--model', '-m', 
@@ -183,7 +228,7 @@ def main():
     
     args = parser.parse_args()
     
-    # Set device
+    # デバイスを設定
     if args.device == 'auto':
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     else:
@@ -191,7 +236,7 @@ def main():
     
     print(f"Using device: {device}")
     
-    # Check if model file exists
+    # モデルファイルの存在を確認
     if not os.path.exists(args.model):
         print(f"Error: Model file not found: {args.model}")
         print(f"Available models in checkpoints directory:")
@@ -203,18 +248,18 @@ def main():
         return 1
     
     try:
-        # Load model and tokenizer
+        # モデルとトークナイザーを読み込み
         model, tokenizer, checkpoint = load_model_and_tokenizer(args.model, device)
         
         if args.prompt:
-            # Single generation mode
+            # 単一生成モード
             generated_text = generate_text(
                 model, tokenizer, args.prompt, 
                 args.max_tokens, args.temperature, args.top_k, device
             )
             print(f"\nGenerated text:\n{generated_text}")
         else:
-            # Interactive mode
+            # インタラクティブモード
             interactive_mode(model, tokenizer, device)
         
         return 0
