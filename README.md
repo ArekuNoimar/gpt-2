@@ -5,9 +5,6 @@
 ## ライセンス
 
 このプロジェクトは **Apache License 2.0** の下でライセンスされています。  
-詳細については [THIRD_PARTY_LICENSES/LICENSE-APACHE-2.0.txt](THIRD_PARTY_LICENSES/LICENSE-APACHE-2.0.txt) を参照してください。
-
-## サードパーティライブラリの帰属
 
 - **LLMs-from-scratch** by rasbt  
   Apache License 2.0 の下でライセンスされています（[THIRD_PARTY_LICENSES/LICENSE-APACHE-2.0.txt](THIRD_PARTY_LICENSES/LICENSE-APACHE-2.0.txt) を参照）  
