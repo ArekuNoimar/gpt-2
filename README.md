@@ -272,7 +272,7 @@ docker build -t gpt2-dev .
 docker run -it --gpus all gpt2-dev /bin/bash
 ```
 
-### 構築したモデルのサンプル
+### モデルの学習サンプル
 
 例：'openai-community/gpt2-large'級モデルの場合
 
