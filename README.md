@@ -4,14 +4,14 @@
 
 ## ライセンス
 
-このプロジェクトは **Apache License 2.0** の下でライセンスされています。  
+このプロジェクトは 下記の引用よりライセンスを継承しています
 
 - **LLMs-from-scratch** by rasbt  
-  Apache License 2.0 の下でライセンスされています（[THIRD_PARTY_LICENSES/LICENSE-APACHE-2.0.txt](THIRD_PARTY_LICENSES/LICENSE-APACHE-2.0.txt) を参照）  
+  Apache License 2.0 ライセンスを継承しています。'https://www.apache.org/licenses/'を参照
   元のリポジトリ: https://github.com/rasbt/LLMs-from-scratch
 
 - **openai-community/gpt2** by Hugging Face  
-  MIT License の下でライセンスされています（[THIRD_PARTY_LICENSES/LICENSE-MIT.txt](THIRD_PARTY_LICENSES/LICENSE-MIT.txt) を参照）  
+  MIT License ライセンスを継承しています。 'https://choosealicense.com/licenses/mit/'を参照  
   モデルページ: https://huggingface.co/openai-community/gpt2
 
 
