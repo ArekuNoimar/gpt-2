@@ -67,6 +67,8 @@ python3 gpt2_demo.py
 
 ```bash
 # HuggingFace 'openai-community/gpt2'のパラメーターに該当
+# 使用GPU容量：3,908MiB
+
 python3 gpt2_from_scratch.py \
     --d_model 768 \
     --n_heads 12 \
@@ -83,6 +85,8 @@ python3 gpt2_from_scratch.py \
 
 ```bash
 # HuggingFace 'openai-community/gpt2-medium'のパラメーターに該当
+# 使用GPU容量：8,576MiB
+
 python3 gpt2_from_scratch.py \
     --d_model 1024 \
     --n_heads 16 \
@@ -99,6 +103,8 @@ python3 gpt2_from_scratch.py \
 
 ```bash
 # HuggingFace 'openai-community/gpt2-large'のパラメーターに該当
+# 使用GPU容量：17,614MiB
+
 python3 gpt2_from_scratch.py \
     --d_model 1280 \
     --n_heads 20 \
@@ -116,7 +122,7 @@ python3 gpt2_from_scratch.py \
 <出力>
 
   - デバイス情報（CUDA/CPU）
-  - モデルパラメータ数（例：15.8M parameters）
+  - モデルパラメータ数
   - 訓練進行状況（エポック、バッチ、ロス値）
   - チェックポイント保存メッセージ
   - テキスト生成例（"The quick brown"から始まる生成文）
@@ -266,35 +272,136 @@ docker build -t gpt2-dev .
 docker run -it --gpus all gpt2-dev /bin/bash
 ```
 
-### 構築したモデルについて
+### 構築したモデルのサンプル
 
-- パラメーター：49.4M
+例：'openai-community/gpt2-large'級モデルの場合
+
+```bash
+# HuggingFace 'openai-community/gpt2-large'のパラメーターに該当
+# 使用GPU容量：17,614MiB
+
+python3 gpt2_from_scratch.py \
+    --d_model 1280 \
+    --n_heads 20 \
+    --n_layers 36 \
+    --d_ff 5120 \
+    --max_len 1024 \
+    --dropout 0.1 \
+    --batch_size 1 \
+    --learning_rate 0.0001 \
+    --num_epochs 10 \
+    --save_dir ./checkpoints \
+    --prompt "The quick brown"
+```
+
+モデルパラメーター： 838.2M
 
 ```txt
 GPT2Model(
-  (token_embedding): Embedding(50257, 384)
-  (position_embedding): Embedding(512, 384)
+  (token_embedding): Embedding(50257, 1280)
+  (position_embedding): Embedding(1024, 1280)
   (transformer_blocks): ModuleList(
-    (0-5): 6 x TransformerBlock(
-      (attention): MultiHeadAttention(
-        (w_q): Linear(in_features=384, out_features=384, bias=False)
-        (w_k): Linear(in_features=384, out_features=384, bias=False)
-        (w_v): Linear(in_features=384, out_features=384, bias=False)
-        (w_o): Linear(in_features=384, out_features=384, bias=True)
+    (0-35): 36 x TransformerBlock(
+      (attn): MultiHeadAttention(
+        (w_q): Linear(in_features=1280, out_features=1280, bias=False)
+        (w_k): Linear(in_features=1280, out_features=1280, bias=False)
+        (w_v): Linear(in_features=1280, out_features=1280, bias=False)
+        (w_o): Linear(in_features=1280, out_features=1280, bias=True)
         (dropout): Dropout(p=0.1, inplace=False)
       )
-      (feed_forward): PositionwiseFeedForward(
-        (linear1): Linear(in_features=384, out_features=1536, bias=True)
-        (linear2): Linear(in_features=1536, out_features=384, bias=True)
+      (mlp): MLP(
+        (c_fc): Linear(in_features=1280, out_features=5120, bias=True)
+        (c_proj): Linear(in_features=5120, out_features=1280, bias=True)
         (dropout): Dropout(p=0.1, inplace=False)
       )
-      (layer_norm1): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
-      (layer_norm2): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+      (layer_norm1): LayerNorm((1280,), eps=1e-05, elementwise_affine=True)
+      (layer_norm2): LayerNorm((1280,), eps=1e-05, elementwise_affine=True)
       (dropout): Dropout(p=0.1, inplace=False)
     )
   )
-  (layer_norm): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
-  (output_projection): Linear(in_features=384, out_features=50257, bias=False)
+  (layer_norm): LayerNorm((1280,), eps=1e-05, elementwise_affine=True)
+  (output_projection): Linear(in_features=1280, out_features=50257, bias=False)
   (dropout): Dropout(p=0.1, inplace=False)
 )
+```
+
+```log
+Starting training...
+Checkpoints will be saved to: ./checkpoints
+Epoch 1/10, Batch 0, Loss: 11.1640
+Epoch 1/10 completed. Average Loss: 6.2374
+Model saved to: ./checkpoints/gpt2_checkpoint_epoch_1_20250804_043211.pt
+Checkpoint saved: ./checkpoints/gpt2_checkpoint_epoch_1_20250804_043211.pt
+Epoch 2/10, Batch 0, Loss: 4.5080
+Epoch 2/10 completed. Average Loss: 4.0992
+Model saved to: ./checkpoints/gpt2_checkpoint_epoch_2_20250804_043223.pt
+Checkpoint saved: ./checkpoints/gpt2_checkpoint_epoch_2_20250804_043223.pt
+Epoch 3/10, Batch 0, Loss: 3.8718
+Epoch 3/10 completed. Average Loss: 3.6079
+Model saved to: ./checkpoints/gpt2_checkpoint_epoch_3_20250804_043236.pt
+Checkpoint saved: ./checkpoints/gpt2_checkpoint_epoch_3_20250804_043236.pt
+Epoch 4/10, Batch 0, Loss: 3.3078
+Epoch 4/10 completed. Average Loss: 3.1260
+Model saved to: ./checkpoints/gpt2_checkpoint_epoch_4_20250804_043248.pt
+Checkpoint saved: ./checkpoints/gpt2_checkpoint_epoch_4_20250804_043248.pt
+Epoch 5/10, Batch 0, Loss: 2.7470
+Epoch 5/10 completed. Average Loss: 2.3654
+Model saved to: ./checkpoints/gpt2_checkpoint_epoch_5_20250804_043300.pt
+Checkpoint saved: ./checkpoints/gpt2_checkpoint_epoch_5_20250804_043300.pt
+Epoch 6/10, Batch 0, Loss: 1.7899
+Epoch 6/10 completed. Average Loss: 1.4322
+Model saved to: ./checkpoints/gpt2_checkpoint_epoch_6_20250804_043313.pt
+Checkpoint saved: ./checkpoints/gpt2_checkpoint_epoch_6_20250804_043313.pt
+Epoch 7/10, Batch 0, Loss: 0.9120
+Epoch 7/10 completed. Average Loss: 0.7984
+Model saved to: ./checkpoints/gpt2_checkpoint_epoch_7_20250804_043325.pt
+Checkpoint saved: ./checkpoints/gpt2_checkpoint_epoch_7_20250804_043325.pt
+Epoch 8/10, Batch 0, Loss: 0.5499
+Epoch 8/10 completed. Average Loss: 0.4955
+Model saved to: ./checkpoints/gpt2_checkpoint_epoch_8_20250804_043338.pt
+Checkpoint saved: ./checkpoints/gpt2_checkpoint_epoch_8_20250804_043338.pt
+Epoch 9/10, Batch 0, Loss: 0.3162
+Epoch 9/10 completed. Average Loss: 0.3784
+Model saved to: ./checkpoints/gpt2_checkpoint_epoch_9_20250804_043350.pt
+Checkpoint saved: ./checkpoints/gpt2_checkpoint_epoch_9_20250804_043350.pt
+Epoch 10/10, Batch 0, Loss: 0.2712
+Epoch 10/10 completed. Average Loss: 0.2690
+Model saved to: ./checkpoints/gpt2_checkpoint_epoch_10_20250804_043403.pt
+Checkpoint saved: ./checkpoints/gpt2_checkpoint_epoch_10_20250804_043403.pt
+Model saved to: ./checkpoints/gpt2_final_model.pt
+Final model saved: ./checkpoints/gpt2_final_model.pt
+
+Testing text generation...
+Prompt: The quick brown
+Generated: The quick brownPT-2 model.
+     Machine learning is fascinating. Deep learning models like transformers have revolutionized natural language processing.
+```
+
+### 構築したモデルの推論サンプル
+
+```bash
+# 使用GPU容量：13,704MiB 
+
+python3 inference.py \
+    --model 'checkpoints/gpt2_final_model.pt' \
+    --prompt 'hello !' \
+    --max_tokens 50 --temperature 0.7 \
+    --top_k 40 \
+    --device 'auto'
+```
+
+```log
+Model loaded successfully!
+Model configuration:
+  - Vocabulary size: 50257
+  - Model dimension: 1280
+  - Number of layers: 36
+  - Max sequence length: 1024
+
+Prompt: hello !
+Generating...
+
+Generated text:
+hello !.
+        The quick brown fox jumps over the lazy dog. This is a sample text for training our GPT-2 model. Large language models like transformers have revolutionized natural language processing.
 ```
