@@ -685,9 +685,10 @@ def load_wikipedia_dataset(num_samples=None):
         split="train"
     )
 
-    if num_samples:
-        ds = ds.select(range(min(num_samples, len(ds))))
-        print(f"Using {len(ds)} samples from dataset")
+    # 全件利用するためコメントアウト
+    # if num_samples:
+    #     ds = ds.select(range(min(num_samples, len(ds))))
+    #     print(f"Using {len(ds)} samples from dataset")
 
     # テキストを結合
     texts = []
