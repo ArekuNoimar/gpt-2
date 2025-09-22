@@ -1,0 +1,16 @@
+[project]
+name = "gpt-2"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "datasets>=4.1.1",
+    "matplotlib>=3.10.6",
+    "nump>=5.5.5.5",
+    "pandas>=2.3.2",
+    "psutil>=7.1.0",
+    "tiktoken>=0.11.0",
+    "torch==2.8.0",
+    "tqdm>=4.67.1",
+]
