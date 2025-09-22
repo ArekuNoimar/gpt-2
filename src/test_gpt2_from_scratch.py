@@ -10,15 +10,15 @@ uv run src/gpt2_from_scratch.py \
     --n_layers 12 \
     --d_ff 3072 \
     --max_len 1024 \
-    --dropout 0 \
-    --batch_size 5 \
+    --dropout 0.01 \
+    --batch_size 30 \
     --learning_rate 0.0001 \
     --num_epochs 1 \
     --save_dir ./checkpoints \
-    --save_every 1000 \
+    --save_every 10000 \
     --sequence_length 768 \
     --num_samples 1000000 \
-    --prompt "what is machne learning"
+    --prompt "what is machne learning" \
 """
 
 import torch
