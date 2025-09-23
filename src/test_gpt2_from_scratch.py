@@ -4,21 +4,20 @@ GPT-2モデルのスクラッチ実装
 """
 
 """
-uv run src/gpt2_from_scratch.py \
+uv run src/test_gpt2_from_scratch.py \
     --d_model 768 \
     --n_heads 12 \
     --n_layers 12 \
     --d_ff 3072 \
     --max_len 1024 \
     --dropout 0.01 \
-    --batch_size 30 \
+    --batch_size 20 \
     --learning_rate 0.0001 \
     --num_epochs 1 \
     --save_dir ./checkpoints \
     --save_every 10000 \
     --sequence_length 768 \
-    --num_samples 1000000 \
-    --prompt "what is machne learning" \
+    --prompt "what is machne learning"
 """
 
 import torch
@@ -694,6 +693,7 @@ def load_wikipedia_dataset(num_samples=None):
     texts = []
     for item in ds:
         if item['text'] and len(item['text'].strip()) > 100:  # 短すぎるテキストをフィルタ
+            item['text'] = item['text'] + "<|endoftext|>"
             texts.append(item['text'])
 
     combined_text = '\n\n'.join(texts)
