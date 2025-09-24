@@ -11,7 +11,7 @@ uv run src/test_gpt2_from_scratch.py \
     --d_ff 3072 \
     --max_len 1024 \
     --dropout 0.01 \
-    --batch_size 20 \
+    --batch_size 10 \
     --learning_rate 0.0001 \
     --num_epochs 1 \
     --save_dir ./checkpoints \
@@ -495,13 +495,18 @@ class TextDataset(Dataset):
 
         print(f"Tokenizing text of length {len(text)} characters...")
 
-        # テキスト全体をトークン化
+        # テキスト全体をトークン化（進捗バー付き）
+        print("Encoding text to tokens...")
         tokens = tokenizer.encode(text)
         print(f"Tokenized to {len(tokens)} tokens")
 
-        # 重複するシーケンスを作成
+        # 重複するシーケンスを作成（進捗バー付き）
         self.sequences = []
-        for i in range(0, len(tokens) - max_length + 1, self.stride):
+        num_sequences = (len(tokens) - max_length) // self.stride + 1
+        print(f"Creating {num_sequences} sequences...")
+        
+        for i in tqdm(range(0, len(tokens) - max_length + 1, self.stride), 
+                     desc="Creating sequences", unit="sequence"):
             sequence = tokens[i:i + max_length]
             if len(sequence) == max_length:
                 self.sequences.append(sequence)
@@ -689,13 +694,16 @@ def load_wikipedia_dataset(num_samples=None):
     #     ds = ds.select(range(min(num_samples, len(ds))))
     #     print(f"Using {len(ds)} samples from dataset")
 
-    # テキストを結合
+    # テキストを結合（進捗バー付き）
     texts = []
-    for item in ds:
+    print(f"Processing {len(ds)} articles...")
+    
+    for item in tqdm(ds, desc="Processing articles", unit="article"):
         if item['text'] and len(item['text'].strip()) > 100:  # 短すぎるテキストをフィルタ
             item['text'] = item['text'] + "<|endoftext|>"
             texts.append(item['text'])
 
+    print(f"Combining {len(texts)} articles...")
     combined_text = '\n\n'.join(texts)
     print(f"Loaded {len(texts)} articles, total length: {len(combined_text)} characters")
 
